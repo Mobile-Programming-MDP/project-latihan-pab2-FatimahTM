@@ -1,0 +1,32 @@
+[
+  {
+    "nama": "John Doe",
+    "umur": 30,
+    "alamat": {
+      "jalan": "Jl. Merdeka No. 10",
+      "kota": "Bandung",
+      "provinsi": "Jawa Barat"
+    },
+    "hobi": ["Membaca", "Bersepeda", "Memasak"]
+  },
+  {
+    "nama": "Jane Smith",
+    "umur": 25,
+    "alamat": {
+      "jalan": "Jl. Pahlawan No. 5",
+      "kota": "Surabaya",
+      "provinsi": "Jawa Timur"
+    },
+    "hobi": ["Berenang", "Menulis", "Fotografi"]
+  },
+  {
+    "nama": "Ahmad Zaki",
+    "umur": 40,
+    "alamat": {
+      "jalan": "Jl. Raya No. 20",
+      "kota": "Yogyakarta",
+      "provinsi": "DI Yogyakarta"
+    },
+    "hobi": ["Mendaki Gunung", "Melukis", "Main Catur"]
+  }
+]
