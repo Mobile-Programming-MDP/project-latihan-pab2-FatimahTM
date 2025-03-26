@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "381908478328",
+    "firebase_url": "https://fatimah-app-default-rtdb.firebaseio.com",
+    "project_id": "fatimah-app",
+    "storage_bucket": "fatimah-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381908478328:android:d693455cfe4fff3a95408d",
+        "android_client_info": {
+          "package_name": "com.example.daftar_belanja"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnXi2-9bpr8sTlyNVQHQ1FKe1W058srsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
