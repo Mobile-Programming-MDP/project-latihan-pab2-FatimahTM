@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "114598193397",
+    "firebase_url": "https://fatimah-app2-default-rtdb.firebaseio.com",
+    "project_id": "fatimah-app2",
+    "storage_bucket": "fatimah-app2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114598193397:android:92e73f694e96f8a32ffdbc",
+        "android_client_info": {
+          "package_name": "com.example.fasum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjWf6gKCmdV-4pCSKSR6fn23VPKWyVFPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
