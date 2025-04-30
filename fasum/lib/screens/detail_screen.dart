@@ -1,94 +1,159 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart'; // Untuk format tanggal
 import 'dart:convert';
 
-class DetailScreen extends StatelessWidget {
-  final String
-      postId; // Menyimpan ID post untuk mengambil detail dari Firestore
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-  const DetailScreen({Key? key, required this.postId}) : super(key: key);
+class DetailScreen extends StatefulWidget {
+  const DetailScreen({
+    super.key,
+    required this.imageBase64,
+    required this.description,
+    required this.createdAt,
+    required this.fullName,
+    required this.latitude,
+    required this.longitude,
+    required this.category,
+    required this.heroTag,
+  });
 
-  // Fungsi untuk format waktu yang lebih user-friendly
-  String formatTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final diff = now.difference(dateTime);
-    if (diff.inSeconds < 60) {
-      return '${diff.inSeconds} seconds ago';
-    } else if (diff.inMinutes < 60) {
-      return '${diff.inMinutes} minutes ago';
-    } else if (diff.inHours < 24) {
-      return '${diff.inHours} hours ago';
-    } else {
-      return DateFormat('dd/MM/yyyy').format(dateTime);
+  final String imageBase64;
+  final String description;
+  final DateTime createdAt;
+  final String fullName;
+  final double latitude;
+  final double longitude;
+  final String category;
+  final String heroTag;
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  Future<void> openMap() async {
+    final uri = Uri.parse(
+        "https://www.google.com/maps/search/?api=1&query=${widget.latitude},${widget.longitude}");
+    final success = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!mounted) return;
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Tidak bisa membuka Google Map")));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final createdAtFormatted =
+        DateFormat('dd MM yyyy, HH:mm').format(widget.createdAt);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post Details'),
+        title: const Text("Detail Laporan"),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('posts')
-            .doc(postId)
-            .get(), // Ambil post berdasarkan ID
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(child: Text('Post not found.'));
-          }
-
-          final data = snapshot.data!.data() as Map<String, dynamic>;
-          final imageBase64 = data['image'];
-          final description = data['description'];
-          final createdAtStr = data['createdAt'];
-          final fullName = data['fullName'] ?? 'Anonim';
-
-          final createdAt = DateTime.parse(createdAtStr);
-
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                if (imageBase64 != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.memory(
-                      base64Decode(imageBase64),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: 250,
+                Hero(
+                  tag: widget.heroTag,
+                  child: Image.memory(
+                    base64Decode(widget.imageBase64),
+                    width: double.infinity,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.fullscreen,
+                      color: Colors.white,
                     ),
+                    tooltip: 'Lihat Gambar Penuh',
+                    style: IconButton.styleFrom(backgroundColor: Colors.black),
                   ),
-                const SizedBox(height: 16),
-                Text(
-                  fullName,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  formatTime(createdAt),
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  description ?? 'No description provided.',
-                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
-          );
-        },
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //Kiri : kategori dan waktu
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.category,
+                                  size: 20,
+                                  color: Colors.red,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  widget.category,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.access_time,
+                                  size: 20,
+                                  color: Colors.red,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  createdAtFormatted,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      //Kanan : icon map
+                      IconButton(
+                        onPressed: openMap,
+                        icon: const Icon(
+                          Icons.map,
+                          size: 38,
+                          color: Colors.lightGreen,
+                        ),
+                        tooltip: "Buka di Google Map",
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    widget.description,
+                    style: const TextStyle(fontSize: 16),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
