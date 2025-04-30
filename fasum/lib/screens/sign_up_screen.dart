@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Tambahkan ini untuk menyimpan fullname
 import 'package:fasum/screens/home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -10,6 +11,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final _fullNameController =
+      TextEditingController(); // ✅ Tambahkan controller untuk full name
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -27,6 +30,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               const SizedBox(height: 32),
+              TextField(
+                // ✅ Tambahkan field untuk Full Name
+                controller: _fullNameController,
+                decoration: const InputDecoration(
+                  labelText: "Full Name",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -67,10 +79,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   }
 
                   try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    final userCredential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
                       email: _emailController.text,
                       password: _passwordController.text,
                     );
+
+                    // ✅ Simpan fullName ke Firestore
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userCredential.user!.uid)
+                        .set({
+                      'fullName': _fullNameController.text,
+                      'email': _emailController.text,
+                    });
+
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) => const HomeScreen(),
