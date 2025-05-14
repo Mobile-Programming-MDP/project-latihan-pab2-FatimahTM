@@ -1,0 +1,2 @@
+D:/if41/project-latihan-pab2-FatimahTM/fasum/android/app/.cxx/Debug/3x1r612p/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/if41/project-latihan-pab2-FatimahTM/fasum/android/app/.cxx/Debug/3x1r612p/armeabi-v7a/CMakeFiles/rebuild_cache.dir
